@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import './app.scss';
 
 
-
 import Header from "./components/header/header";
 import Form from "./components/form/form";
 import Results from "./components/results/results"
@@ -15,6 +14,7 @@ function App() {
     requestParams: {},
   }
   const [state, setState] = useState(data);
+
   const callApi = (requestParams) => {
     const data = {
       count: 2,
