@@ -1,38 +1,48 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 
 import './form.scss';
 
-function Form(props) {
+function Form({ callApi, setData }) {
     const [method, setMethod] = useState('GET');
-    const [url, setUrl] = useState('https://pokeapi.co/api/v2/pokemon')
-    let handleSubmit = e => {
+
+    const handleSubmit = e => {
         e.preventDefault();
         const formData = {
             method: method,
-            url: url,
+            url: e.target[0].value,
         };
-        props.handleApiCall(formData);
+        callApi(formData);
+        if (method === "GET" && formData.url) {
+            axios.get(e.target[0].value)
+                .then(res => {
+                    const person = res.data;
+                    setData(person)
+                }).catch((e) => {
+                    console.log(e);
+                    setData("loading...")
+                });
+        }
+
     }
-    let changeMethode = e => {
-        setMethod(e.target.id)
-    }
-    let urlFunction = e => {
-        setUrl(e.target.value)
-    }
+
     return (
         <>
             <form onSubmit={handleSubmit}>
                 <label>
                     <span className='p-3'>URL: </span>
-                    <input name='url' type='text' placeholder='Http://localhost:3000' onChange={urlFunction} />
+                    <input name='url' type='text' />
                     <button className='btn btn-primary m-2'>GO!</button>
                     <label className='methods'>
-                        <span id='GET' onClick={changeMethode}>GET</span>
-                        <span id='POST' onClick={changeMethode}>POST</span>
-                        <span id='PUT' onClick={changeMethode}>PUT</span>
-                        <span id='DELETE' onClick={changeMethode}>DELETE</span>
+                        <span id='get' onClick={() => setMethod('GET')}>GET</span>
+                        <span id='post' onClick={() => setMethod('POST')}>POST</span>
+                        <span id='put' onClick={() => setMethod('PUT')}>PUT</span>
+                        <span id='delete' onClick={() => setMethod('DELETE')}>DELETE</span>
                     </label>
                 </label>
+                {
+                    method === "POST" || method === "PUT" ? < input className='textArea container' type="text" placeholder='Enter Your Text' /> : null
+                }
             </form>
         </>
     )
