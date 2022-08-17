@@ -1,10 +1,14 @@
 import axios from 'axios';
-import React, { useState } from 'react'
-
+import React, { useReducer, useState } from 'react'
+import Reducer, { add } from 'react';
 import './form.scss';
 
+const initialState = {
+    history: []
+}
 function Form({ callApi, setData }) {
     const [method, setMethod] = useState('GET');
+    const [history, dispatch] = useReducer(Reducer, initialState)
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -12,6 +16,10 @@ function Form({ callApi, setData }) {
             method: method,
             url: e.target[0].value,
         };
+
+        console.log(formData);
+        console.log(history);
+
         callApi(formData);
         if (method === "GET" && formData.url) {
             axios.get(e.target[0].value)
